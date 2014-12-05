@@ -22,12 +22,26 @@ game.PlayerEntity = me.Entity.extend({
     },
     
     update: function(delta){
+        
+        
+        
         if(me.input.isKeyPressed("right")){
             this.body.vel.x += this.body.accel.x * me.timer.tick;
+            this.renderable.setCurrentAnimation("smallWalk");
+        }else if(me.input.isKeyPressed("left")){
+            this.body.vel.x -= this.body.accel.x * me.timer.tick;
             this.renderable.setCurrentAnimation("smallWalk");
         }else{
             this.body.vel.x = 0;
         }
+        if(me.input.isKeyPressed("up")){
+            if(!this.body.jumping && !this.body.falling){
+                this.body.vel.y += -this.body.maxVel.y * me.timer.tick;
+                this.body.jumping = jumping= true;
+            }
+        }
+        
+        
         
         this.body.update(delta);
         me.collision.check(this, true, this.collideHandler.bind(this), true);
@@ -46,13 +60,12 @@ game.PlayerEntity = me.Entity.extend({
         return true;
     },
     
-    collideHandler: function(response){   
+    collideHandler: function(response){
     }
     
-    
-});
-
-game.LevelTrigger = me.Entity.extend({
+    });
+      
+    game.LevelTrigger = me.Entity.extend({
     init: function(x, y, settings){
         this._super(me.Entity, 'init', [x, y, settings]);
         this.body.onCollision = this.onCollision.bind(this);
